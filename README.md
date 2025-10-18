@@ -48,7 +48,10 @@ jitter_secs = 3600
 
 [s3]
 bucket = "my-certificates-bucket"
+endpoint = "https://s3.example.com"
 region = "us-east-1"
+prefix = ""
+force_path_style = true
 access_key = "your-s3-access-key"
 secret_key = "your-s3-secret-key"
 
@@ -77,7 +80,10 @@ jitter_secs = 0
 
 [s3]
 bucket = "my-certificates-bucket"
+endpoint = "https://s3.example.com"
 region = "us-east-1"
+prefix = ""
+force_path_style = true
 access_key = "your-s3-access-key"
 secret_key = "your-s3-secret-key"
 ```
