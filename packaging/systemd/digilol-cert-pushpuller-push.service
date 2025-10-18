@@ -1,0 +1,13 @@
+[Unit]
+Description=Push encrypted certificates to S3
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/digilol-cert-pushpuller push --config /etc/digilol-cert-pushpuller/push.toml
+User=root
+WorkingDirectory=/root
+
+[Install]
+WantedBy=multi-user.target

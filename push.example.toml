@@ -1,0 +1,27 @@
+key_dir = "/var/lib/digilol-cert-pushpuller/keys"
+cert_dir = ".lego/certificates"
+reload_cmd = "systemctl reload nginx"
+
+[daemon]
+enabled = false
+interval_secs = 86400
+jitter_secs = 3600
+
+[s3]
+bucket = "my-certificates-bucket"
+endpoint = "https://s3.example.com"
+region = "us-east-1"
+prefix = ""
+force_path_style = true
+access_key = "your-s3-access-key"
+secret_key = "your-s3-secret-key"
+
+[[lego_commands]]
+command = "lego -d '*.example.com' -d example.com -a -m admin@example.com --dns cloudflare renew"
+[lego_commands.env]
+CF_DNS_API_TOKEN = "your-cloudflare-token"
+
+[[lego_commands]]
+command = "lego -d '*.example.net' -d example.net -s https://acme.zerossl.com/v2/DV90 -a -m admin@example.net --eab --kid your-eab-kid --hmac your-eab-hmac --dns bunny renew"
+[lego_commands.env]
+BUNNY_API_KEY = "your-bunny-api-key"

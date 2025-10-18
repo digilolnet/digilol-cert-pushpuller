@@ -1,0 +1,100 @@
+version: 2
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - freebsd
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+    flags:
+      - -trimpath
+
+archives:
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}
+    files:
+      - LICENSE.txt
+      - README.md
+      - push.example.toml
+      - pull.example.toml
+
+checksum:
+  name_template: "checksums.txt"
+
+nfpms:
+  - package_name: digilol-cert-pushpuller
+    maintainer: Laurynas Četyrkinas <laurynas@digilol.net>
+    description: Tool for encrypting and syncing certificates via S3 with automatic renewal
+    license: Apache-2.0
+    formats:
+      - deb
+      - rpm
+      - apk
+    overrides:
+      deb:
+        scripts:
+          postinstall: packaging/scripts/deb/postinst
+          preremove: packaging/scripts/deb/prerm
+          postremove: packaging/scripts/deb/postrm
+      rpm:
+        scripts:
+          postinstall: packaging/scripts/rpm/postinst
+          preremove: packaging/scripts/rpm/prerm
+          postremove: packaging/scripts/rpm/postrm
+      apk:
+        scripts:
+          preremove: packaging/scripts/apk/pre-deinstall
+    contents:
+      - src: packaging/systemd/digilol-cert-pushpuller-push.service
+        dst: /usr/lib/systemd/system/digilol-cert-pushpuller-push.service
+        packager: deb
+      - src: packaging/systemd/digilol-cert-pushpuller-push.service
+        dst: /usr/lib/systemd/system/digilol-cert-pushpuller-push.service
+        packager: rpm
+      - src: packaging/systemd/digilol-cert-pushpuller-push.timer
+        dst: /usr/lib/systemd/system/digilol-cert-pushpuller-push.timer
+        packager: deb
+      - src: packaging/systemd/digilol-cert-pushpuller-push.timer
+        dst: /usr/lib/systemd/system/digilol-cert-pushpuller-push.timer
+        packager: rpm
+      - src: packaging/systemd/digilol-cert-pushpuller-pull.service
+        dst: /usr/lib/systemd/system/digilol-cert-pushpuller-pull.service
+        packager: deb
+      - src: packaging/systemd/digilol-cert-pushpuller-pull.service
+        dst: /usr/lib/systemd/system/digilol-cert-pushpuller-pull.service
+        packager: rpm
+      - src: packaging/systemd/digilol-cert-pushpuller-pull.timer
+        dst: /usr/lib/systemd/system/digilol-cert-pushpuller-pull.timer
+        packager: deb
+      - src: packaging/systemd/digilol-cert-pushpuller-pull.timer
+        dst: /usr/lib/systemd/system/digilol-cert-pushpuller-pull.timer
+        packager: rpm
+      - src: packaging/openrc/digilol-cert-pushpuller-push
+        dst: /etc/init.d/digilol-cert-pushpuller-push
+        file_info:
+          mode: 0755
+        packager: apk
+      - src: packaging/openrc/digilol-cert-pushpuller-pull
+        dst: /etc/init.d/digilol-cert-pushpuller-pull
+        file_info:
+          mode: 0755
+        packager: apk
+      - src: push.example.toml
+        dst: /usr/share/doc/digilol-cert-pushpuller/push.example.toml
+      - src: pull.example.toml
+        dst: /usr/share/doc/digilol-cert-pushpuller/pull.example.toml
+      - dst: /etc/digilol-cert-pushpuller
+        type: dir
+      - dst: /var/lib/digilol-cert-pushpuller/keys
+        type: dir
+        file_info:
+          mode: 0700
+      - dst: /var/lib/digilol-cert-pushpuller/certificates
+        type: dir

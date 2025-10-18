@@ -1,0 +1,13 @@
+#!/sbin/openrc-run
+
+description="Push encrypted certificates to S3 (daemon mode)"
+
+supervisor=supervise-daemon
+command="/usr/bin/digilol-cert-pushpuller"
+command_args="push --config /etc/digilol-cert-pushpuller/push.toml"
+command_user="root"
+
+depend() {
+    need net
+    after firewall
+}

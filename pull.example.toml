@@ -1,0 +1,17 @@
+key_dir = "/var/lib/digilol-cert-pushpuller/keys"
+cert_dir = "/var/lib/digilol-cert-pushpuller/certificates"
+reload_cmd = "systemctl reload nginx"
+
+[daemon]
+enabled = false
+interval_secs = 300
+jitter_secs = 0
+
+[s3]
+bucket = "my-certificates-bucket"
+endpoint = "https://s3.example.com"
+region = "us-east-1"
+prefix = ""
+force_path_style = true
+access_key = "your-s3-access-key"
+secret_key = "your-s3-secret-key"

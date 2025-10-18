@@ -1,0 +1,8 @@
+#!/bin/sh
+
+rc-service digilol-cert-pushpuller-push stop >/dev/null 2>&1 || true
+rc-service digilol-cert-pushpuller-pull stop >/dev/null 2>&1 || true
+rc-update del digilol-cert-pushpuller-push >/dev/null 2>&1 || true
+rc-update del digilol-cert-pushpuller-pull >/dev/null 2>&1 || true
+
+exit 0

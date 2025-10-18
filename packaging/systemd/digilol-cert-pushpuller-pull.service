@@ -1,0 +1,13 @@
+[Unit]
+Description=Pull encrypted certificates from S3
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/digilol-cert-pushpuller pull --config /etc/digilol-cert-pushpuller/pull.toml
+User=root
+WorkingDirectory=/root
+
+[Install]
+WantedBy=multi-user.target
