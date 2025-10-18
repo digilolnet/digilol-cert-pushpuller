@@ -137,7 +137,7 @@ func pull(cfg *config.PullConfig) error {
 		}
 
 		// Write to local file (without .enc extension)
-		if err := os.WriteFile(filePath, decrypted, 0644); err != nil {
+		if err := os.WriteFile(filePath, decrypted, 0600); err != nil {
 			return fmt.Errorf("write %s: %w", filePath, err)
 		}
 
