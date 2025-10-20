@@ -79,7 +79,6 @@ func push(cfg *config.PushConfig) error {
 	}
 
 	newHashes := make(map[string]string)
-	uploaded := false
 
 	// Process each certificate
 	for certName, files := range certFiles {
@@ -105,10 +104,10 @@ func push(cfg *config.PushConfig) error {
 			s3FileName := fileName + ".enc"
 			s3Key := s3client.BuildKey(cfg.S3.Prefix, s3FileName)
 
-			newHashes[s3FileName] = localHashStr
+			newHashes[fileName] = localHashStr
 
 			// Check if hash matches
-			if existingHash, ok := existingHashes[s3FileName]; ok && existingHash == localHashStr {
+			if existingHash, ok := existingHashes[fileName]; ok && existingHash == localHashStr {
 				continue
 			}
 
@@ -128,13 +127,25 @@ func push(cfg *config.PushConfig) error {
 				return fmt.Errorf("upload %s to S3: %w", s3Key, err)
 			}
 
-			uploaded = true
 			log.Printf("uploaded %s", s3Key)
 		}
 	}
 
-	// Upload updated hashes file if anything changed
-	if uploaded {
+	// Check if hashes changed
+	hashesChanged := false
+	if len(newHashes) != len(existingHashes) {
+		hashesChanged = true
+	} else {
+		for k, v := range newHashes {
+			if existingHashes[k] != v {
+				hashesChanged = true
+				break
+			}
+		}
+	}
+
+	// Upload updated hashes file if it changed
+	if hashesChanged {
 		hashesJSON, err := json.Marshal(newHashes)
 		if err != nil {
 			return fmt.Errorf("marshal hashes: %w", err)
